@@ -1,6 +1,6 @@
 # bro-shark
 Bro-IDS + ELK = Bro-Shark
 
-Not ready yet.
+> Not ready yet.
 
-Check back later ;)
+Check back later ::wink::
