@@ -50,9 +50,7 @@ class MyHandler(PatternMatchingEventHandler):
                     # print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(doc['ts']))
                     # doc['@timestamp'] = time.strftime('%Y-%m-%d %H:%M:%S.%f', time.localtime(doc['ts']))
                     doc['timestamp'] = datetime.fromtimestamp(int(doc['ts']))
-                    timestamp = datetime.fromtimestamp(int(doc['ts']))
-                    # print doc
-                    resp = es.index(index='bro', doc_type=log_type, body=doc, timestamp=timestamp)
+                    resp = es.index(index='bro', doc_type=log_type, body=doc, timestamp=doc['timestamp'])
             # time.sleep(1)
             os.remove(file_path)
         except Exception as e:
