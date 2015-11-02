@@ -8,6 +8,7 @@ web:
   volumes:
     - /usr/src/app/static
     - /pcaps
+    - /scripts
   env_file: .env
   command: /usr/local/bin/gunicorn -w 2 -b :8000 app:app
 
@@ -61,7 +62,7 @@ nginx:
   env_file:
     - ./secrets.env
   volumes:
-    - /www/static    
+    - /www/static
   volumes_from:
     - web
   links:
