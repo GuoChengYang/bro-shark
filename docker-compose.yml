@@ -23,7 +23,7 @@ bro:
 kibana:
   image: "kibana"
   ports:
-    - "80:5601"
+    - "5601:5601"
   links:
     - "elasticsearch:elasticsearch"
   restart: always
@@ -41,7 +41,7 @@ elasticsearch:
   restart: always
 
 logstash:
-  image: "logstash:latest"
+  image: "logstash"
   ports:
     - "5000:5000"
   volumes:
