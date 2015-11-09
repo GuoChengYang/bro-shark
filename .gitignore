@@ -49,6 +49,7 @@ coverage.xml
 *.log
 
 # Sphinx documentation
+/web/static/bower_components
 docs/_build/
 
 # PyBuilder

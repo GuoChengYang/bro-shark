@@ -12,13 +12,13 @@ web:
   env_file: .env
   command: /usr/local/bin/gunicorn -w 2 -b :8000 app:app
 
-bro:
-  image: "blacktop/bro"
-  command: -r my_capture.pcap /scripts/extract-files.bro /scripts/conn-add-geodata.bro local #"Site::local_nets += { 192.168.99.0/24 }"
-  volumes:
-    - "/bro_logs"
-  volumes_from:
-    - web
+#bro:
+#  image: "blacktop/bro"
+#  command: -r my_capture.pcap /scripts/extract-files.bro /scripts/conn-add-geodata.bro local #"Site::local_nets += { 192.168.99.0/24 }"
+#  volumes:
+#    - "/bro_logs"
+#  volumes_from:
+#    - web
 
 kibana:
   image: "kibana"
@@ -40,27 +40,42 @@ elasticsearch:
   command: "-Des.network.host=0.0.0.0"
   restart: always
 
-logstash:
-  image: "logstash"
-  ports:
-    - "5000:5000"
-  volumes:
-    - "./config:/config-dir"
-  volumes_from:
-    - bro
-  command: logstash -f /config-dir/logstash.conf
+#logstash:
+#  image: "logstash"
+#  ports:
+#    - "5000:5000"
+#  volumes:
+#    - "./config:/config-dir"
+#  volumes_from:
+#    - bro
+#  command: logstash -f /config-dir/logstash.conf
+
+#nginx:
+#  build: ./nginx/
+#  ports:
+#    - "80:80"
+#    - "443:443"
+#  volumes:
+#    - ./nginx.key:/etc/nginx/ssl/nginx.key
+#    - ./nginx.crt:/etc/nginx/ssl/nginx.crt
+#    - ./config/nginx/kibana.conf:/etc/nginx/conf.d/kibana.conf
+#  env_file:
+#    - .env
+##    - ./secrets.env
+#  volumes:
+#    - /www/static
+#  volumes_from:
+#    - web
+#  links:
+#    - web:web
+#    - kibana:kibana
+#  restart: always
 
 nginx:
+  restart: always
   build: ./nginx/
   ports:
     - "80:80"
-    - "443:443"
-  volumes:
-    - ./nginx.key:/etc/nginx/ssl/nginx.key
-    - ./nginx.crt:/etc/nginx/ssl/nginx.crt
-    - ./config/nginx/kibana.conf:/etc/nginx/conf.d/kibana.conf
-  env_file:
-    - ./secrets.env
   volumes:
     - /www/static
   volumes_from:
@@ -68,9 +83,22 @@ nginx:
   links:
     - web:web
     - kibana:kibana
-  restart: always
 
 # data:
 #   image: "busybox"
 #   volumes:
 #     - "/usr/share/elasticsearch/data"
+
+data:
+  image: postgres:latest
+  volumes:
+    - /var/lib/postgresql
+  command: "true"
+
+postgres:
+  restart: always
+  image: postgres:latest
+  volumes_from:
+    - data
+  ports:
+    - "5432:5432"
